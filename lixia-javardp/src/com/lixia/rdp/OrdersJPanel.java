@@ -511,7 +511,7 @@ public class OrdersJPanel {
 
         // in_uint8p(s, data, bufsize);
 
-        /*logger.info*/System.out.println("BMPCACHE2(compr=" + compressed + ",flags=" + flags
+        logger.info("BMPCACHE2(compr=" + compressed + ",flags=" + flags
                 + ",width=" + width + ",height=" + height + ",cache_id=" + cache_id
                 + ",cache_idx=" + cache_idx + ",Bpp=" + Bpp + ",bufsize=" + bufsize + ")");
 

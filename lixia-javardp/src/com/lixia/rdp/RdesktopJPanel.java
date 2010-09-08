@@ -716,7 +716,7 @@ public abstract class RdesktopJPanel extends javax.swing.JPanel {
         srcy += y - memblt.getY();
 
         if (logger.isInfoEnabled()){
-            /*logger.info*/System.out.println("MEMBLT x=" + x + " y=" + y + " cx=" + cx + " cy=" + cy
+            logger.info("MEMBLT x=" + x + " y=" + y + " cx=" + cx + " cy=" + cy
                     + " srcx=" + srcx + " srcy=" + srcy +" CacheID():"+memblt.getCacheID()+" CacheIDX():"+memblt.getCacheIDX()+ " opcode="
                     + memblt.getOpcode());
 //            logger.info("memblt.getCacheID():"+memblt.getCacheID()+" memblt.getCacheIDX():"+memblt.getCacheIDX());
