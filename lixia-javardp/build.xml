@@ -14,7 +14,7 @@
   <property name="jar.log4j.java11" value="log4j-java1.1.jar"/>
   <property name="jar.gnugetopt" value="java-getopt-1.0.11.jar"/>
   <property name="commonxml" value="${basedir}/build-common.xml"/>
-  <property name="runclass" value="com.elusiva.rdp.RdesktopSwing"/>
+  <property name="runclass" value="com.lixia.rdp.RdesktopSwing"/>
 
   <!-- Load additional and personalised properties -->
   <property file="${basedir}/project.properties"/>
