@@ -20,14 +20,14 @@
 		<description>
 		</description>
 		<display-name>
-		CounterSocketServlet</display-name>
-		<servlet-name>CounterSocketServlet</servlet-name>
+		RDPSocketServlet</display-name>
+		<servlet-name>RDPSocketServlet</servlet-name>
 		<servlet-class>
-		com.lixia.uag.broker.CounterSocketServlet</servlet-class>
+		com.lixia.uag.broker.RDPSocketServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>CounterSocketServlet</servlet-name>
-		<url-pattern>/CounterSocketServlet</url-pattern>
+		<servlet-name>RDPSocket</servlet-name>
+		<url-pattern>/RDPSocket</url-pattern>
 	</servlet-mapping>
 	
 	<welcome-file-list>
