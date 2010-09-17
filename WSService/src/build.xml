@@ -1,0 +1,116 @@
+<project name="WSService" basedir=".." default="install">
+
+    <!-- project-specific variables -->
+    <property name="jsp.dir.name" value="myapp" />
+    <property name="package.name" value="${jsp.dir.name}.war" />
+    <property name="webapp.dir" value="/Users/al/tomcat-6.0.16/webapps" />
+
+    <property environment="env" />
+    <property name="build.dir" value="build" />
+    <property file="${build.dir}/build.${env.HOSTNAME}" />
+
+    <property name="lib.dir" value="lib" />
+    <property name="pages.dir" value="pages" />
+    <property name="src.dir" value="src" />
+    <property name="src.tests.dir" value="src-tests" />
+    <property name="resources.dir" value="resources" />
+    <property name="dest.dir" value="target" />
+
+    <!-- put everything in a temp folder with the right structure during the build -->
+    <property name="temp.dir" value="temp" />
+    <property name="temp.dir.web-inf" value="${temp.dir}/WEB-INF" />
+    <property name="temp.dir.lib" value="${temp.dir.web-inf}/lib" />
+    <property name="temp.dir.classes" value="${temp.dir.web-inf}/classes" />
+    <property name="temp.dir.meta-inf" value="${temp.dir}/META-INF" />
+
+    <property name="package.file" value="${dest.dir}/${package.name}" />
+
+    <path id="build.class.path">
+        <fileset dir="lib">
+            <include name="**/*.jar" />
+        </fileset>
+    </path>
+
+    <target name="clean">
+        <delete>
+            <fileset dir="${dest.dir}" includes="**/*"/>
+        </delete>
+        <delete dir="${temp.dir}" />
+        <delete dir="${temp.dir.classes}" />
+        <delete dir="${temp.dir.meta-inf}" />
+        <delete dir="${temp.dir.web-inf}" />
+    </target>
+
+    <target name="prepare" depends="clean">
+        <mkdir dir="${dest.dir}" />
+        <mkdir dir="${temp.dir}" />
+        <mkdir dir="${temp.dir.lib}" />
+        <mkdir dir="${temp.dir.meta-inf}" />
+        <mkdir dir="${temp.dir.web-inf}" />
+        <mkdir dir="${temp.dir.classes}" />
+    </target>
+
+    <!-- COMPILE -->
+    <target name="compile" depends="prepare">
+        <echo>=== COMPILE ===</echo>
+        <echo>Compiling ${src.dir} files ...</echo>
+        <javac debug="on" srcdir="${src.dir}" destdir="${temp.dir.classes}" includes="**/*">
+            <classpath refid="build.class.path" />
+        </javac>
+
+        <!-- compile files on the src-tests path -->
+        <echo>Compiling ${src.tests.dir} files ...</echo>
+        <javac debug="on" srcdir="${src.tests.dir}" destdir="${temp.dir.classes}" includes="com/**">
+            <classpath refid="build.class.path" />
+        </javac>
+    </target>
+
+    <!-- PACKAGE -->
+    <target name="package" depends="compile">
+      <echo>=== PACKAGE ===</echo>
+     
+      <!-- copy the config files -->
+      <copy file="${resources.dir}/MANIFEST.MF" tofile="${temp.dir.meta-inf}/MANIFEST.MF" overwrite="true" />
+      <copy file="${resources.dir}/web.xml" tofile="${temp.dir.web-inf}/web.xml" overwrite="true" />
+      <copy file="${resources.dir}/managed-beans.xml" tofile="${temp.dir.web-inf}/managed-beans.xml" overwrite="true" />
+      <copy file="${resources.dir}/navigation-rules.xml" tofile="${temp.dir.web-inf}/navigation-rules.xml" overwrite="true" />
+
+      <copy todir="${temp.dir.classes}">
+        <fileset dir="${src.dir}">
+          <include name="**/*.xml"/>
+          <include name="**/*.xsl"/>
+        </fileset>
+      </copy>
+    	
+      <!-- the ant war task. with all resources in place, create the war file -->
+      <war destfile="${package.file}" webxml="${temp.dir.web-inf}/web.xml" basedir="${temp.dir}">
+        <fileset dir="${pages.dir}"/>
+        <lib dir="${lib.dir}" />
+        <classes dir="${temp.dir.classes}" />
+      </war>
+    </target>
+
+    <!-- JUST DEPLOY THE JSP's (without rebuilding the entire project) -->
+    <target name="jsps">
+      <echo>=== DEPLOY JSP'S ===</echo>
+      <!-- i'm trying to be explicit about what i put out there -->
+      <copy todir="${webapp.dir}/${jsp.dir.name}">
+        <fileset dir="${pages.dir}">
+          <include name="**/*.jsp"/>
+          <include name="**/*.html"/>
+          <include name="**/*.css"/>
+          <include name="**/*.gif"/>
+          <include name="**/*.jpg"/>
+          <include name="**/*.png"/>
+          <include name="**/*.js"/>
+        </fileset>
+      </copy>
+    </target>	
+	
+    <!-- INSTALL -->
+	<target name="install" depends="package">
+      <echo>=== INSTALL ===</echo>
+      <copy file="${package.file}" tofile="${webapp.dir}/${package.name}" overwrite="true" />
+    </target>
+
+</project>

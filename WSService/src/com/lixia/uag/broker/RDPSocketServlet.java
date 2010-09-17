@@ -14,9 +14,18 @@ public class RDPSocketServlet extends WebSocketServlet {
 	
 	@Override
 	protected WebSocket doWebSocketConnect(HttpServletRequest arg0, String arg1) {
+    	if(TCPTunnelManager.getInstance()!=null){
+    		TCPTunnelManager.getInstance().register(this);
+    	}
 		return new CounterSocket();
 	}
-
+	@Override
+	public void destroy(){
+		if(TCPTunnelManager.getInstance()!=null){
+    		TCPTunnelManager.getInstance().deRegister(this);
+    	}
+	}
+	
 	final class CounterSocket implements WebSocket {
 
         private Outbound outbound;
@@ -28,9 +37,6 @@ public class RDPSocketServlet extends WebSocketServlet {
         }
         
 //        http://www.eb163.com/club/thread-6565-1-1.html
-        //
-        //http://tech.kaazing.com/documentation/howto-java.html 
-//        How to Use the Kaazing Client Libraries in Java
         
         public void onMessage(final byte frame, final String data) {
             System.out.println("onMessage:"+data+"frame:" + frame);
@@ -63,7 +69,8 @@ public class RDPSocketServlet extends WebSocketServlet {
                               final int offset, final int length) {
 			//any binary data from client will go to rdp server
             if(tunnel != null){
-//            	System.out.println("frame:"+frame+"send to rdp server - len:"+length+"offset:"+offset + "data[] len:"+data.length);
+            	if(Constents.debug_mode)
+            		System.out.println("frame:"+frame+"send to rdp server - len:"+length+"offset:"+offset + "data[] len:"+data.length);
             	try {
 //            		outbound.sendMessage(frame, data, offset, length);
             		outbound.sendMessage((byte)0x00, "echo");//have to send back echo to clean outbound buffer, jetty websocket issue???

@@ -14,8 +14,6 @@ import java.net.UnknownHostException;
 import org.eclipse.jetty.websocket.WebSocket.Outbound;
 
 public class TCPTunnel {
-
-	private static int BUFFER_SIZE = 1024*6;
 	
 	private Socket rdpsock = null;
 	private URI url = null;
@@ -82,7 +80,8 @@ public class TCPTunnel {
 		
     }
 	
-	public synchronized void close(){
+	public void close(){
+		
         if (!connected) {
             return;
         }
@@ -114,12 +113,13 @@ public class TCPTunnel {
 
         @Override
         public void run() {
-        	byte[] buffer = new byte[BUFFER_SIZE];
+        	byte[] buffer = new byte[Constents.BUFFER_SIZE];
             while (!stop) {
                 try {
                 	//data bridge between RDP server and websocket client
                     int len = input.read(buffer);
-//                    System.out.println("get data from rdp server:"+len);
+                    if(Constents.debug_mode)
+                    	System.out.println("get data from rdp server:"+len);
                     if(len > 0)
                     	outbound.sendMessage((byte)0x80, buffer, 0, len);//0x80 means binary data in websocket
                 } catch (IOException ioe) {
@@ -127,7 +127,8 @@ public class TCPTunnel {
                     handleError();
                 }
             }
-            System.out.println("receiver stopped!");
+//            if(Constents.debug_mode)
+            	System.out.println("receiver stopped!");
         }
 
         public void stopit() {
