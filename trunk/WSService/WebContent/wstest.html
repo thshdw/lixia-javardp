@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html> 
+    <head> 
+        <title>WebSoket Demo</title> 
+
+    </head> 
+    <body> 
+        <div id="valueLabel"></div> 
+        <div id='chat'></div>
+    
+       <script type="text/javascript"> 
+            if (!window.WebSocket) { 
+                alert("WebSocket not supported by this browser!"); 
+            } else{
+             	display();
+            }
+
+
+            function display() { 
+                
+                var valueLabel = document.getElementById("valueLabel"); 
+                 alert("Hello, display!"+valueLabel);
+                valueLabel.innerHTML = ""; 
+                
+                var ws = new WebSocket(
+                    "ws://localhost:8080/WSService/CounterSocketServlet"); 
+                ws.onmessage = function(evt) { 
+                    valueLabel.innerHTML = evt.data; 
+                }; 
+
+                ws.onclose = function() { 
+                }; 
+
+                ws.onopen = function() { 
+                	alert("Hello, Server!");
+                    ws.send("Hello, Server!"); 
+                }; 
+                
+            } 
+        </script> 
+    </body> 
+</html> 
