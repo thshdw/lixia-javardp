@@ -715,12 +715,12 @@ public abstract class RdesktopJPanel extends javax.swing.JPanel {
         srcx += x - memblt.getX();
         srcy += y - memblt.getY();
 
-        if (logger.isInfoEnabled()){
-            logger.info("MEMBLT x=" + x + " y=" + y + " cx=" + cx + " cy=" + cy
-                    + " srcx=" + srcx + " srcy=" + srcy +" CacheID():"+memblt.getCacheID()+" CacheIDX():"+memblt.getCacheIDX()+ " opcode="
-                    + memblt.getOpcode());
+//        if (logger.isInfoEnabled()){
+//            logger.info("MEMBLT x=" + x + " y=" + y + " cx=" + cx + " cy=" + cy
+//                    + " srcx=" + srcx + " srcy=" + srcy +" CacheID():"+memblt.getCacheID()+" CacheIDX():"+memblt.getCacheIDX()+ " opcode="
+//                    + memblt.getOpcode());
 //            logger.info("memblt.getCacheID():"+memblt.getCacheID()+" memblt.getCacheIDX():"+memblt.getCacheIDX());
-        }
+//        }
         try {
             Bitmap bitmap = cache.getBitmap(memblt.getCacheID(), memblt
                     .getCacheIDX());
