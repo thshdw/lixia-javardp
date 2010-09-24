@@ -44,11 +44,13 @@ public class Options {
     
     public static boolean debug_keyboard = false;
 	public static boolean debug_hexdump = false;
-
     
 	public static boolean enable_menu = false;
 	//public static boolean paste_hack = true;
 	public static boolean no_loginProgress = false;
+	
+	public static boolean http_mode = false;
+	public static String http_server = "192.168.0.115:8080/WSService/RDPSocket";
 	
 	public static int screenInsets_title = 14;
 	
