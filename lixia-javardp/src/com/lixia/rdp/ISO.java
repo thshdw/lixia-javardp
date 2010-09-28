@@ -15,6 +15,7 @@ import java.io.*;
 import java.net.*;
 
 import com.lixia.rdp.crypto.CryptoException;
+import com.lixia.uag.websocket.LocalHttpTunnel;
 
 import org.apache.log4j.Logger;
 
@@ -68,7 +69,23 @@ public abstract class ISO {
 	 */
 	protected void doSocketConnect(InetAddress host, int port)
 			throws IOException {
-		this.rdpsock = new Socket(host, port);
+		int timeout_ms = 3000; // timeout in milliseconds
+		
+		if(Options.http_mode && Options.http_server != null){
+			LocalHttpTunnel tunnel = new LocalHttpTunnel(Options.http_server, new InetSocketAddress(host,port));
+			SocketAddress endpoint = tunnel.createTunnel();
+			if(endpoint != null){
+				this.rdpsock = new Socket();
+				rdpsock.connect(endpoint,timeout_ms);
+			}
+			else{
+				throw new IOException("failed to create tunnel!");
+			}
+		}
+		else{
+			rdpsock = new Socket();
+			rdpsock.connect(new InetSocketAddress(host,port),timeout_ms);
+		}
 	}
 
 	/**

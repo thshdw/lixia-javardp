@@ -739,15 +739,15 @@ public abstract class InputJPanel {
 			int time = getTime();
 			if (rdp != null) {
 				if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
-					logger.debug("Mouse Button 1 Pressed.");
+//					logger.debug("Mouse Button 1 Pressed.");
 					rdp.sendInput(time, RDP_INPUT_MOUSE, MOUSE_FLAG_BUTTON1
 							| MOUSE_FLAG_DOWN, e.getX(), e.getY());
 				} else if ((e.getModifiers() & InputEvent.BUTTON3_MASK) == InputEvent.BUTTON3_MASK) {
-					logger.debug("Mouse Button 3 Pressed.");
+//					logger.debug("Mouse Button 3 Pressed.");
 					rdp.sendInput(time, RDP_INPUT_MOUSE, MOUSE_FLAG_BUTTON2
 							| MOUSE_FLAG_DOWN, e.getX(), e.getY());
 				} else if ((e.getModifiers() & InputEvent.BUTTON2_MASK) == InputEvent.BUTTON2_MASK) {
-					logger.debug("Middle Mouse Button Pressed.");
+//					logger.debug("Middle Mouse Button Pressed.");
 					middleButtonPressed(e);
 				}
 			}

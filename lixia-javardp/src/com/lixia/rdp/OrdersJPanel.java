@@ -510,10 +510,9 @@ public class OrdersJPanel {
         }
 
         // in_uint8p(s, data, bufsize);
-
-        logger.info("BMPCACHE2(compr=" + compressed + ",flags=" + flags
-                + ",width=" + width + ",height=" + height + ",cache_id=" + cache_id
-                + ",cache_idx=" + cache_idx + ",Bpp=" + Bpp + ",bufsize=" + bufsize + ")");
+//	logger.info("BMPCACHE2(compr=" + compressed + ",flags=" + flags
+//                + ",width=" + width + ",height=" + height + ",cache_id=" + cache_id
+//                + ",cache_idx=" + cache_idx + ",Bpp=" + Bpp + ",bufsize=" + bufsize + ")");
 
         bmpdata = new byte[width * height * Bpp];
         int[] bmpdataInt = new int[width * height];
@@ -533,23 +532,10 @@ public class OrdersJPanel {
             }
             bitmap = new Bitmap(bmpdataInt, width, height, 0, 0);
         } else {
-            for (y = 0; y < height; y++)
+            for (y = 0; y < height; y++){
                 data.copyToByteArray(bmpdata, y * (width * Bpp),
-                        (height - y - 1) * (width * Bpp), width * Bpp); // memcpy(&bmpdata[(height
-                                                                        // - y -
-                                                                        // 1) *
-                                                                        // (width
-                                                                        // *
-                                                                        // Bpp)],
-                                                                        // &data[y
-                                                                        // *
-                                                                        // (width
-                                                                        // *
-                                                                        // Bpp)],
-                                                                        // width
-                                                                        // *
-                                                                        // Bpp);
-
+                		(height - y - 1) * (width * Bpp)+data.getPosition(), width * Bpp); 
+            }
             bitmap = new Bitmap(Bitmap.convertImage(bmpdata, Bpp), width,
                     height, 0, 0);
         }
