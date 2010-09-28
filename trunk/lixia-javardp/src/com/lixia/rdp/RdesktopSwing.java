@@ -206,7 +206,8 @@ public class RdesktopSwing {
 		System.err.println("	--quiet_alt 				enable quiet alt fix");
 		System.err.println("	--no_encryption				disable encryption from client to server");
 		System.err.println("	--use_rdp4					use RDP version 4");
-        //System.err.println("    --enable_menu               enable menu bar");
+        System.err.println("    --enable_menu               enable menu bar");
+        System.err.println("    --overHttp                http proxy server address and port(example--192.168.100.100:80)");
         System.err.println("	--log4j_config=FILE			use FILE for log4j configuration");
         System.err.println("Example: java com.lixia.rdp.RdesktopSwing -g 800x600 -l WARN m52.propero.int");
 
@@ -271,7 +272,7 @@ public class RdesktopSwing {
         alo[12] = new LongOpt("load_licence", LongOpt.NO_ARGUMENT, null, 0);
         alo[13] = new LongOpt("save_licence", LongOpt.NO_ARGUMENT, null, 0);
         alo[14] = new LongOpt("persistent_caching", LongOpt.NO_ARGUMENT, null, 0);
-        alo[15] = new LongOpt("no_loginProgress", LongOpt.NO_ARGUMENT, null, 0);
+        alo[15] = new LongOpt("overHttp", LongOpt.REQUIRED_ARGUMENT, null, 0);
         
 		String progname = "Elusiva Everywhere";
 
@@ -334,7 +335,10 @@ public class RdesktopSwing {
                     Options.persistent_bitmap_caching = true;
                     break;
                 case 15:
-                	Options.no_loginProgress = true;
+                	Options.http_mode = true;
+                	arg = g.getOptarg();
+                	Options.http_server = arg;
+					logger.info("remote http proxy server " + arg);
                 	break;
 				default:
 					usage();

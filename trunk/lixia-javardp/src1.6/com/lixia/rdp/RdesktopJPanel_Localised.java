@@ -40,7 +40,6 @@ public class RdesktopJPanel_Localised extends RdesktopJPanel {
             // Save as JPEG
             File file = new File("./testimages/" + Options.imgCount + ".jpg");
             Options.imgCount++;
-//            System.out.println("------------ "+Options.imgCount);
             ImageIO.write(img, "jpg", file);
         } catch (IOException e) {
         }
