@@ -16,18 +16,20 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Collections;
 
+import javax.swing.JPanel;
+
 import com.lixia.rdp.keymapping.KeyCode;
 import com.lixia.rdp.keymapping.KeyCode_FileBased;
 
 
 public class Input_Localised_JPanel extends InputJPanel {
-	public Input_Localised_JPanel(RdesktopJPanel c, RdpJPanel r, KeyCode_FileBased k){
+	public Input_Localised_JPanel(JPanel c, RdpJPanel r, KeyCode_FileBased k){
 		super(c,r,k);
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().setDefaultFocusTraversalKeys (KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().setDefaultFocusTraversalKeys (KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);		
 	}
 	
-	public Input_Localised_JPanel(RdesktopJPanel c, RdpJPanel r, String k){
+	public Input_Localised_JPanel(JPanel c, RdpJPanel r, String k){
 		super(c,r,k);
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().setDefaultFocusTraversalKeys (KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().setDefaultFocusTraversalKeys (KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, Collections.EMPTY_SET);		
