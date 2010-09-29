@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.net.*;
 import java.awt.*;
 
+import com.lixia.rdp.RdesktopJPanel;
 import com.lixia.rdp.keymapping.KeyCode_FileBased;
 import com.lixia.rdp.rdp5.Rdp5JPanel;
 import com.lixia.rdp.rdp5.VChannels;
@@ -174,6 +175,8 @@ public class RdesktopSwing {
 	static SendEventJPanel toolFrame = null;
 	
     public static KeysChannel keyChannel=null; 
+    public static RdesktopJPanel g_canvas;
+    public static KeyCode_FileBased keyMap = null;
 	/**
 	 * Outputs version and usage information via System.err
 	 * 
@@ -527,9 +530,9 @@ public class RdesktopSwing {
 		
 		RdesktopJPanel canvas = (RdesktopJPanel)window.getContentPane();
 		canvas.addFocusListener(clipChannel);
-		
+		g_canvas = canvas;
 		// Configure a keyboard layout
-		KeyCode_FileBased keyMap = null;
+//		KeyCode_FileBased keyMap = null;
 		try {
 			// logger.info("looking for: " + "/" + keyMapPath + mapFile);
 			InputStream istr = RdesktopSwing.class.getResourceAsStream("/" + keyMapPath + mapFile);
