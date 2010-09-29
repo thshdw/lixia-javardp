@@ -23,6 +23,7 @@ import org.apache.log4j.Level;
 import java.awt.event.*;
 import java.util.Vector;
 
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 public abstract class InputJPanel {
@@ -80,7 +81,7 @@ public abstract class InputJPanel {
 	public boolean modifiersValid = false;
 	public boolean keyDownWindows = false;
 
-	protected RdesktopJPanel canvas = null;
+	protected JPanel canvas = null;
 	protected RdesktopJFrame frame = null;
 	protected RdpJPanel rdp = null;
 	KeyCode keys = null;
@@ -92,7 +93,7 @@ public abstract class InputJPanel {
      * @param r Rdp layer on which to send input messages
      * @param k Key map to use in handling keyboard events
      */
-	public InputJPanel(RdesktopJPanel c, RdpJPanel r, KeyCode_FileBased k) {
+	public InputJPanel(JPanel c, RdpJPanel r, KeyCode_FileBased k) {
 		newKeyMapper = k;
 		canvas = c;
 		this.frame = (RdesktopJFrame) SwingUtilities.getWindowAncestor(canvas);
@@ -109,7 +110,7 @@ public abstract class InputJPanel {
      * @param r Rdp layer on which to send input messages
      * @param keymapFile Path to file containing keymap data
      */
-	public InputJPanel(RdesktopJPanel c, RdpJPanel r, String keymapFile) {
+	public InputJPanel(JPanel c, RdpJPanel r, String keymapFile) {
 		try {
 			newKeyMapper = new KeyCode_FileBased_Localised(keymapFile);
 		} catch (KeyMapException kmEx) {

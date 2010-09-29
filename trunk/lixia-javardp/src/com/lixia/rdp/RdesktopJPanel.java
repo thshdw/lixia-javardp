@@ -119,7 +119,15 @@ public abstract class RdesktopJPanel extends javax.swing.JPanel {
         // now do input listeners in registerCommLayer() / registerKeyboard()
     }
 
-    public Dimension getMinimumSize()
+    public WrappedImage getBackstore() {
+		return backstore;
+	}
+
+	public void setBackstore(WrappedImage backstore) {
+		this.backstore = backstore;
+	}
+
+	public Dimension getMinimumSize()
     {
         return (dimension);
     }

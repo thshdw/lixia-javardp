@@ -65,7 +65,7 @@ public class RdesktopJFrame extends javax.swing.JFrame {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			pack();
 //			setSize(Options.width+8, Options.height+12);
-			setSize(Options.width, Options.height);
+//			setSize(Options.width, Options.height);
 			
 			if (Constants.OS != Constants.WINDOWS)
 				setResizable(false);
