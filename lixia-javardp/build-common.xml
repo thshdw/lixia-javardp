@@ -6,6 +6,7 @@
   <path id="build.classpath">
     <fileset dir="${java.log4j11.package}" includes="${jar.log4j.java11}"/>
     <fileset dir="${java.getopt.package}" includes="${jar.gnugetopt}"/>
+  	<fileset dir="${javardp-wsclient.package}" includes="${javardp-wsclient.jar}"/>
   </path>
   
   <target name="init-common">
