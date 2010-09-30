@@ -9,10 +9,12 @@
 
   <property name="java.log4j11.package" value="${basedir}/log4j-java1.1"/>
   <property name="java.getopt.package" value="${basedir}/gnu-getopt-1.0.11-java/lib"/>
+  <property name="javardp-wsclient.package" value="${basedir}/lib"/>
 	
   <property name="log4j.java11" value="log4j-java1.1"/>
   <property name="jar.log4j.java11" value="log4j-java1.1.jar"/>
   <property name="jar.gnugetopt" value="java-getopt-1.0.11.jar"/>
+  <property name="javardp-wsclient.jar" value="javardp-wsclient-1.0.jar"/>
   <property name="commonxml" value="${basedir}/build-common.xml"/>
   <property name="runclass" value="com.lixia.rdp.RdesktopSwing"/>
 
@@ -46,6 +48,12 @@
 		      defaultexcludes="no"
 		      excludes="META-INF/*">
 		<zipfileset src="${java.getopt.package}/${jar.gnugetopt}" excludes="META-INF/*"/>
+	    </jar>
+	  	
+	  	<jar jarfile="${dist.dir}/${javardp-wsclient.jar}" 
+		      defaultexcludes="no"
+		      excludes="META-INF/*">
+		<zipfileset src="${javardp-wsclient.package}/${javardp-wsclient.jar}" excludes="META-INF/*"/>
 	    </jar>
 
 	  </target>
@@ -88,6 +96,7 @@
       <fileset dir="${basedir}/" includes="keymaps/*"/>
       <zipfileset src="${java.log4j11.package}/${jar.log4j.java11}" excludes="META-INF/*"/>
       <zipfileset src="${java.getopt.package}/${jar.gnugetopt}" excludes="META-INF/*"/>
+      <zipfileset src="${javardp-wsclient.package}/${javardp-wsclient.jar}" excludes="META-INF/*"/>
     </jar>
   </target>
  
