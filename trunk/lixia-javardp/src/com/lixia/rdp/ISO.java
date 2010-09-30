@@ -72,7 +72,11 @@ public abstract class ISO {
 		int timeout_ms = 3000; // timeout in milliseconds
 		
 		if(Options.http_mode && Options.http_server != null){
-			LocalHttpTunnel tunnel = new LocalHttpTunnel(Options.http_server, new InetSocketAddress(host,port));
+			LocalHttpTunnel tunnel = new LocalHttpTunnel(Options.http_server, 
+					new InetSocketAddress(host,port),
+					Options.username,
+					Options.password,
+					Options.command);
 			SocketAddress endpoint = tunnel.createTunnel();
 			if(endpoint != null){
 				this.rdpsock = new Socket();
