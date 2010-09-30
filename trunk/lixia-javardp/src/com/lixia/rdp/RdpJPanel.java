@@ -14,6 +14,7 @@ package com.lixia.rdp;
 import java.io.*;
 import java.net.*;
 
+import com.lixia.rdp.RdesktopSwing;
 import com.lixia.rdp.crypto.*;
 import com.lixia.rdp.rdp5.VChannels;
 
@@ -1350,7 +1351,7 @@ public class RdpJPanel {
         switch (system_pointer_type) {
         case RDP_NULL_POINTER:
             logger.debug("RDP_NULL_POINTER");
-            surface.setCursor(null);
+            setSubCursor(null);
             break;
 
         default:
@@ -1508,7 +1509,7 @@ public class RdpJPanel {
             throws RdesktopException {
         // FIXME: We should probably set another cursor here,
         // like the X window system base cursor or something.
-        surface.setCursor(cache.getCursor(0));
+        setSubCursor(cache.getCursor(0));
     }
 
     protected void process_colour_pointer_pdu(RdpPacket_Localised data)
@@ -1534,7 +1535,7 @@ public class RdpJPanel {
         cursor = surface.createCursor(x, y, width, height, mask, pixel,
                 cache_idx);
         // logger.info("Creating and setting cursor " + cache_idx);
-        surface.setCursor(cursor);
+        setSubCursor(cursor);
         cache.putCursor(cache_idx, cursor);
     }
 
@@ -1543,6 +1544,16 @@ public class RdpJPanel {
 //        logger.debug("Rdp.RDP_POINTER_CACHED");
         int cache_idx = data.getLittleEndian16();
         // logger.info("Setting cursor "+cache_idx);
-        surface.setCursor(cache.getCursor(cache_idx));
+        setSubCursor(cache.getCursor(cache_idx));
+    }
+    
+    private void setSubCursor(Cursor cursor){
+    	surface.setCursor(cursor);
+    	if(RdesktopSwing.seamlessSetcursor!=null){
+    		try {
+				RdesktopSwing.seamlessSetcursor.invoke(RdesktopSwing.seamlessChannel, cursor);
+			} catch (Exception e) {
+			} 
+    	}
     }
 }

@@ -12,12 +12,17 @@
 package com.lixia.rdp;
 
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.Timer;
 import java.awt.*;
 
+import com.lixia.rdp.Options;
 import com.lixia.rdp.RdesktopJPanel;
 import com.lixia.rdp.keymapping.KeyCode_FileBased;
 import com.lixia.rdp.rdp5.Rdp5JPanel;
+import com.lixia.rdp.rdp5.VChannel;
 import com.lixia.rdp.rdp5.VChannels;
 import com.lixia.rdp.rdp5.cliprdr.ClipChannel;
 import com.lixia.rdp.rdp5.keys.KeysChannel;
@@ -177,6 +182,10 @@ public class RdesktopSwing {
     public static KeysChannel keyChannel=null; 
     public static RdesktopJPanel g_canvas;
     public static KeyCode_FileBased keyMap = null;
+    public static VChannel seamlessChannel = null;
+    public static Method seamlessSetcursor = null;
+    public static Method seamlessRepaint = null;
+    
 	/**
 	 * Outputs version and usage information via System.err
 	 * 
@@ -188,6 +197,8 @@ public class RdesktopSwing {
 		System.err.println("	-c DIR						working directory");
 		System.err.println("	-d DOMAIN					logon domain");
 		System.err.println("	-D is dubug model");
+		System.err.println("	-f[s]				full-screen mode " +
+				"[s to enable seamless mode]");
 		System.err.println("	-g WxH						desktop geometry");
 		System.err.println("	-m MAPFILE					keyboard mapping file for terminal server");
 		System.err.println("	-l LEVEL					logging level {DEBUG, INFO, WARN, ERROR, FATAL}");
@@ -377,6 +388,16 @@ public class RdesktopSwing {
 				}else
 					Options.height = screen_size.height;
 				Options.fullscreen = true;
+				arg = g.getOptarg();
+				if (arg != null) {
+					if(arg.charAt(0) == 's')
+						Options.seamless_active = true;
+					else {
+						System.err.println(progname
+								+ ": Invalid fullscreen option '" + arg + "'");
+						usage();
+					}
+				}
 				break;
 			case 'g':
 				arg = g.getOptarg();
@@ -493,7 +514,23 @@ public class RdesktopSwing {
 				keyChannel=new KeysChannel();
 				channels.register(keyChannel);
 			}
-		}	   
+		}
+		
+		if (Options.seamless_active){
+			try {
+				@SuppressWarnings("rawtypes")
+				Class seamlessClass = Class.forName("com.lixia.rdp.seamless.SeamlessChannel");
+				@SuppressWarnings("unchecked")
+				Method getInstance = seamlessClass.getDeclaredMethod("getInstance", null);
+				seamlessChannel = (VChannel)getInstance.invoke(null, null);
+				channels.register(seamlessChannel);
+				Class params[] = {Class.forName("java.awt.Cursor")};
+				seamlessSetcursor = seamlessClass.getDeclaredMethod("setSubCursor", params);
+				seamlessRepaint = seamlessClass.getDeclaredMethod("repaintAll", null);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 				
 		logger.info("Elusiva Everywhere version " + Version.version);
 

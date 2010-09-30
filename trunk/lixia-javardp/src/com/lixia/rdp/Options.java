@@ -49,6 +49,7 @@ public class Options {
 	//public static boolean paste_hack = true;
 	public static boolean no_loginProgress = false;
 	
+	public static boolean seamless_active = false;
 	public static boolean http_mode = false;
 	public static String http_server = "192.168.0.115:8080/WSService/RDPSocket";
 	

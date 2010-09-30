@@ -38,6 +38,8 @@ import javax.swing.WindowConstants;
 
 import org.apache.log4j.Logger;
 
+import com.lixia.rdp.Options;
+
 
 public class RdesktopJFrame extends javax.swing.JFrame {
 
