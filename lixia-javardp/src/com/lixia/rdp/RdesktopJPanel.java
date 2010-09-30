@@ -14,7 +14,9 @@ package com.lixia.rdp;
 
 import java.awt.*;
 import java.awt.image.*;
+import java.lang.reflect.InvocationTargetException;
 
+import com.lixia.rdp.RdesktopSwing;
 import com.lixia.rdp.keymapping.KeyCode;
 import com.lixia.rdp.keymapping.KeyCode_FileBased;
 import com.lixia.rdp.orders.*;
@@ -141,6 +143,15 @@ public abstract class RdesktopJPanel extends javax.swing.JPanel {
         update(g);
     }
 
+    public void repaintAll(int x, int y, int width, int height){
+    	this.repaint(x, y, width, height);
+    	if(RdesktopSwing.seamlessRepaint!=null){
+    		try {
+				RdesktopSwing.seamlessRepaint.invoke(RdesktopSwing.seamlessChannel, null);
+			} catch (Exception e) {
+			} 
+    	}
+    }
     public abstract void update(Graphics g);
 
     /**
@@ -323,7 +334,7 @@ public abstract class RdesktopJPanel extends javax.swing.JPanel {
                                                 // offset needed
                 cx);
 
-        this.repaint(x, y, cx, cy);
+        this.repaintAll(x, y, cx, cy);
     }
 
     /**
@@ -421,7 +432,7 @@ public abstract class RdesktopJPanel extends javax.swing.JPanel {
 
         // if(logger.isInfoEnabled()) logger.info("rect
         // \t(\t"+x+",\t"+y+"),(\t"+(x+cx-1)+",\t"+(y+cy-1)+")");
-        this.repaint(x, y, cx, cy); // seems to be faster than Graphics.fillRect
+        this.repaintAll(x, y, cx, cy); // seems to be faster than Graphics.fillRect
                                     // according to JProbe
     }
 
@@ -508,7 +519,7 @@ public abstract class RdesktopJPanel extends javax.swing.JPanel {
         int y_min = y1 < y2 ? y1 : y2;
         int y_max = y1 > y2 ? y1 : y2;
 
-        this.repaint(x_min, y_min, x_max - x_min + 1, y_max - y_min + 1);
+        this.repaintAll(x_min, y_min, x_max - x_min + 1, y_max - y_min + 1);
     }
 
     /**
@@ -641,7 +652,7 @@ public abstract class RdesktopJPanel extends javax.swing.JPanel {
 
         rop.do_array(destblt.getOpcode(), backstore, this.width, x, y, cx, cy,
                 null, 0, 0, 0);
-        this.repaint(x, y, cx, cy);
+        this.repaintAll(x, y, cx, cy);
 
     }
 
@@ -682,7 +693,7 @@ public abstract class RdesktopJPanel extends javax.swing.JPanel {
 
         rop.do_array(screenblt.getOpcode(), backstore, this.width, x, y, cx,
                 cy, null, this.width, srcx, srcy);
-        this.repaint(x, y, cx, cy);
+        this.repaintAll(x, y, cx, cy);
 
     }
 
@@ -737,7 +748,7 @@ public abstract class RdesktopJPanel extends javax.swing.JPanel {
             rop.do_array(memblt.getOpcode(), backstore, this.width, x, y, cx,
                     cy, bitmap.getBitmapData(), bitmap.getWidth(), srcx, srcy);
 //            RdesktopJPanel_Localised.saveToFile(backstore.getSubimage(x, y, cx, cy));
-            this.repaint(x, y, cx, cy);
+            this.repaintAll(x, y, cx, cy);
         } catch (RdesktopException e) {
         }
     }
@@ -796,7 +807,7 @@ public abstract class RdesktopJPanel extends javax.swing.JPanel {
                 src[i] = fgcolor;
             rop.do_array(opcode, backstore, this.width, x, y, cx, cy, src, cx,
                     0, 0);
-            this.repaint(x, y, cx, cy);
+            this.repaintAll(x, y, cx, cy);
 
             break;
 
@@ -829,7 +840,7 @@ public abstract class RdesktopJPanel extends javax.swing.JPanel {
             }
             rop.do_array(opcode, backstore, this.width, x, y, cx, cy, src, cx,
                     0, 0);
-            this.repaint(x, y, cx, cy);
+            this.repaintAll(x, y, cx, cy);
             break;
         default:
             logger.warn("Unsupported brush style " + brush.getStyle());
@@ -1145,7 +1156,7 @@ public abstract class RdesktopJPanel extends javax.swing.JPanel {
 
         // if(logger.isInfoEnabled()) logger.info("glyph
         // \t(\t"+x+",\t"+y+"),(\t"+(x+cx-1)+",\t"+(y+cy-1)+")");
-        this.repaint(newx, newy, newcx, newcy);
+        this.repaintAll(newx, newy, newcx, newcy);
     }
 
     /**

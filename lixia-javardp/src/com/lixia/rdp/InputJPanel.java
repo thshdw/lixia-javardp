@@ -20,6 +20,7 @@ import com.lixia.rdp.keymapping.KeyMapException;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
 
+import java.awt.Window;
 import java.awt.event.*;
 import java.util.Vector;
 
@@ -96,7 +97,9 @@ public abstract class InputJPanel {
 	public InputJPanel(JPanel c, RdpJPanel r, KeyCode_FileBased k) {
 		newKeyMapper = k;
 		canvas = c;
-		this.frame = (RdesktopJFrame) SwingUtilities.getWindowAncestor(canvas);
+		Window fm = SwingUtilities.getWindowAncestor(canvas);
+		if(fm instanceof RdesktopJFrame)
+			this.frame = (RdesktopJFrame)fm;
 		rdp = r;
 		if (Options.debug_keyboard)
 			logger.setLevel(Level.DEBUG);
@@ -136,6 +139,7 @@ public abstract class InputJPanel {
 		canvas.addKeyListener(new RdesktopKeyAdapter());
 	}
 
+	
 	/**
      * Send a sequence of key actions to the server
      * @param pressSequence String representing a sequence of key actions.
@@ -321,11 +325,16 @@ public abstract class InputJPanel {
 			}
 		}
 
+		private void hideFrameMenu(){
+			if(frame != null)
+				frame.hideMenu();
+		}
+		
         /**
          * Handle a keyTyped event, sending any relevant keypresses to the server
          */
 		public void keyTyped(KeyEvent e) {
-			frame.hideMenu();
+			hideFrameMenu();
 //			System.out.println("TYPED keychar='" + e.getKeyChar() + "' keycode=0x"
 //					+ Integer.toHexString(e.getKeyCode()) + " char='"
 //					+ ((char) e.getKeyCode()) + "'");
@@ -352,7 +361,7 @@ public abstract class InputJPanel {
          * Handle a keyReleased event, sending any relevent key events to the server
          */
 		public void keyReleased(KeyEvent e) {
-			frame.hideMenu();
+			hideFrameMenu();
 			Integer keycode = new Integer(e.getKeyCode());
 			InputJPanel.keyCode=keycode;
 
@@ -375,7 +384,7 @@ public abstract class InputJPanel {
 				// sendScancode(time, RDP_KEYRELEASE, keys.getScancode(e));
 			}
 //			if(e.getY() != 0) 
-				frame.hideMenu();
+			hideFrameMenu();
 		}
 
 	}
@@ -726,7 +735,7 @@ public abstract class InputJPanel {
 		}
 
 		public void mousePressed(MouseEvent e) {
-			if(e.getY() != 0) frame.hideMenu();
+			if(e.getY() != 0 && frame!=null) frame.hideMenu();
 			/*
 			if(Position.isFrameArea(e.getX(), e.getY())){
 				o_x = e.getX();
