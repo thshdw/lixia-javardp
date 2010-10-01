@@ -22,7 +22,7 @@ import java.io.FileOutputStream;
 
 public class Version
 {
-    public static String version = "1.1";
+    public static String version = "2.0";
 
     /**
      * Display the current version of properJavaRDP
