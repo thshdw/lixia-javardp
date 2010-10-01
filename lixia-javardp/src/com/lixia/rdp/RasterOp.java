@@ -215,7 +215,7 @@ public class RasterOp {
 
         for (int row = 0; row < cy; row++) {
 			for (int col = 0; col < cx; col++) {
-                biDst.setRGB(x+cx,y+cy,(~(biDst.getRGB(x+cx,y+cy) | src[psrc])) & mask);               
+                biDst.setRGB(x+col,y+row,(~(biDst.getRGB(x+col,y+row) | src[psrc])) & mask);               
 			}
 			psrc += (srcwidth - cx);
 		}
@@ -228,8 +228,8 @@ public class RasterOp {
 		int psrc = (srcy * srcwidth + srcx);
 		for (int row = 0; row < cy; row++) {
 			for (int col = 0; col < cx; col++) {
-                int c = biDst.getRGB(x+cx,y+cy);
-                biDst.setRGB(x+cx,y+cy,c & ((~src[psrc]) & mask));              
+                int c = biDst.getRGB(x+col,y+row);
+                biDst.setRGB(x+col,y+row,c & ((~src[psrc]) & mask));              
 				psrc++;
 			}
 			psrc += (srcwidth - cx);
