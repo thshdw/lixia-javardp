@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="JavaRDP" default="standalone" basedir=".">
-  <property name="jar.name" value="properJavaRDP"/>
+  <property name="jar.name" value="JavaRDP"/>
   <property name="dist.dir" value="${basedir}/dist"/>
   <property name="build.dir" value="${basedir}/build"/>
   <property name="src.dir" value="${basedir}/src"/>
@@ -32,7 +32,7 @@
           
   <target name="jar" depends="build">
     <property name="jar.path" value="${jar.name}-${product.version}.jar" />
-    <property name="jar.path.16" value="${jar.name}16-${product.version}.jar" />
+    <property name="jar.path.16" value="${jar.name}${product.version}.jar" />
     <mkdir dir="${dist.dir}" />
     <ant antfile="${commonxml}" target="jar-common"/>
   </target>
@@ -86,7 +86,7 @@
     <ant antfile="${commonxml}" target="generate-product-version"/>
     <property file="${build.dir}/product.version"/>
 
-    <jar destfile="${dist.dir}/JavaRDP16-${product.version}.jar" index="yes">
+    <jar destfile="${dist.dir}/${jar.name}${product.version}.jar" index="yes">
       <manifest>
         <attribute name="Built-By" value="${user.name}"/>
         <attribute name="Main-Class" value="${runclass}"/>

@@ -26,7 +26,7 @@
            includes="**/Version.java"
            destdir="${build.dir}"/>
     <java classpath="${build.dir}"
-          classname="com.elusiva.rdp.Version">
+          classname="com.lixia.rdp.Version">
       <arg value="${build.dir}/product.version"/>
     </java>  
   </target>
@@ -38,11 +38,11 @@
            fork="true"
            target="${java.version}">
     </javac>
-    <mkdir dir="${build.dir}${java.version}/com/elusiva/rdp"/>
-    <move todir="${build.dir}${java.version}/com/elusiva/rdp">
-      <fileset dir="${build.dir}/com/elusiva/rdp" includes="*_Localised.class"/>
+    <mkdir dir="${build.dir}${java.version}/com/lixia/rdp"/>
+    <move todir="${build.dir}${java.version}/com/lixia/rdp">
+      <fileset dir="${build.dir}/com/lixia/rdp" includes="*_Localised.class"/>
     </move>
-  	<copy todir="${build.dir}${java.version}/com/elusiva/rdp">
+  	<copy todir="${build.dir}${java.version}/com/lixia/rdp">
   		<fileset dir="" includes="*.PNG"/>
   	</copy>
   </target>
