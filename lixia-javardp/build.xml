@@ -15,6 +15,8 @@
   <property name="jar.log4j.java11" value="log4j-java1.1.jar"/>
   <property name="jar.gnugetopt" value="java-getopt-1.0.11.jar"/>
   <property name="javardp-wsclient.jar" value="javardp-wsclient-1.0.jar"/>
+  <property name="rdpseamless.jar" value="rdpseamless.jar"/>
+
   <property name="commonxml" value="${basedir}/build-common.xml"/>
   <property name="runclass" value="com.lixia.rdp.RdesktopSwing"/>
 
@@ -55,6 +57,12 @@
 		      excludes="META-INF/*">
 		<zipfileset src="${javardp-wsclient.package}/${javardp-wsclient.jar}" excludes="META-INF/*"/>
 	    </jar>
+	  	
+	  	<jar jarfile="${dist.dir}/${rdpseamless.jar}" 
+	  			      defaultexcludes="no"
+	  			      excludes="META-INF/*">
+	  			<zipfileset src="${javardp-wsclient.package}/${rdpseamless.jar}" excludes="META-INF/*"/>
+	  		    </jar>
 
 	  </target>
 
@@ -97,6 +105,7 @@
       <zipfileset src="${java.log4j11.package}/${jar.log4j.java11}" excludes="META-INF/*"/>
       <zipfileset src="${java.getopt.package}/${jar.gnugetopt}" excludes="META-INF/*"/>
       <zipfileset src="${javardp-wsclient.package}/${javardp-wsclient.jar}" excludes="META-INF/*"/>
+    	<zipfileset src="${javardp-wsclient.package}/${rdpseamless.jar}" excludes="META-INF/*"/>
     </jar>
   </target>
  
