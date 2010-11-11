@@ -67,7 +67,7 @@
 	  </target>
 
 	<target name="release" description="Create the extension archive" depends="standalone">
-		<copy file="${dist.dir}/JavaRDP16-${product.version}.jar" tofile="${build.extension}/JavaRDP16-${product.version}.jar"/>
+		<copy file="${dist.dir}/JavaRDP${product.version}.jar" tofile="${build.extension}/JavaRDP16-${product.version}.jar"/>
 		<copy file="${basedir}/extension.xml" tofile="${build.extension}/extension.xml"/>
 		<echo>Creating the archive</echo>
 		<zip destfile="${dist.dir}/application-seamlessjavardp.zip">
