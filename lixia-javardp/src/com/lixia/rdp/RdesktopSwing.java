@@ -185,6 +185,7 @@ public class RdesktopSwing {
     public static VChannel seamlessChannel = null;
     public static Method seamlessSetcursor = null;
     public static Method seamlessRepaint = null;
+    public static ClipChannel clipChannel = new ClipChannel();
     
 	/**
 	 * Outputs version and usage information via System.err
@@ -293,7 +294,7 @@ public class RdesktopSwing {
 		Getopt g = new Getopt("properJavaRDP", args,
 				"bc:d:f::g:k:l:m:n:p:s:t:u:o:r:", alo);
 
-		ClipChannel clipChannel = new ClipChannel();
+//		ClipChannel clipChannel = new ClipChannel();
 
 		while ((c = g.getopt()) != -1) {
 			switch (c) {
