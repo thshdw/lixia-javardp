@@ -14,6 +14,7 @@ package com.lixia.rdp.rdp5.cliprdr;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.io.UnsupportedEncodingException;
 
 import com.lixia.rdp.Common;
 import com.lixia.rdp.RdpPacket;
@@ -35,12 +36,20 @@ public class UnicodeHandler extends TypeHandler {
 	}
 
 	public void handleData(RdpPacket data, int length, ClipInterface c) {
-		String thingy = "";
-		for(int i = 0; i < length; i+=2){
-			int aByte = data.getLittleEndian16();
-			if(aByte != 0) thingy += (char) (aByte);
+//		String thingy = "";
+		byte[] sBytes = new byte[length];
+		data.copyToByteArray(sBytes, 0, data.getPosition(), length);
+		data.incrementPosition(length);
+//		for(int i = 0; i < length; i+=2){
+//			int aByte = data.getLittleEndian16();
+//			if(aByte != 0) thingy += (char) (aByte);
+//		}
+		try {
+			c.copyToClipboard(new StringSelection(new String(sBytes, "UTF-16LE")));
+		} catch (UnsupportedEncodingException e) {
+//			e.printStackTrace();
 		}
-		c.copyToClipboard(new StringSelection(thingy));
+//		c.copyToClipboard(new StringSelection(thingy));
 		//return(new StringSelection(thingy));
 	}
 
@@ -56,22 +65,30 @@ public class UnicodeHandler extends TypeHandler {
 				s = (String)(in.getTransferData(DataFlavor.stringFlavor));
 			} 
 			catch (Exception e) {
-				s = e.toString();
+				e.printStackTrace();
+//				s = e.toString();
+				return null;
 			}
 			
 			// TODO: think of a better way of fixing this
 			s = s.replace('\n',(char) 0x0a);
 			//s = s.replaceAll("" + (char) 0x0a, "" + (char) 0x0d + (char) 0x0a);
-			s = Utilities_Localised.strReplaceAll(s, "" + (char) 0x0a, "" + (char) 0x0d + (char) 0x0a);
-			byte[] sBytes = s.getBytes();
-			int length = sBytes.length;
-			int lengthBy2 = length*2;
-			RdpPacket p = new RdpPacket_Localised(lengthBy2);
-			for(int i = 0; i < sBytes.length; i++){
-				p.setLittleEndian16(sBytes[i]);
+//			s = Utilities_Localised.strReplaceAll(s, "" + (char) 0x0a, "" + (char) 0x0d + (char) 0x0a);
+			byte[] sBytes = null;
+			try {
+				sBytes = s.getBytes("UTF-16LE");
+			} catch (UnsupportedEncodingException e) {
+//				e.printStackTrace();
 			}
-			sBytes = new byte[length*2];
-			p.copyToByteArray(sBytes,0,0,lengthBy2);
+//			int length = sBytes.length;
+//			int lengthBy2 = length*2;
+//			RdpPacket p = new RdpPacket_Localised(lengthBy2);
+//			for(int i = 0; i < sBytes.length; i++){
+//				p.setLittleEndian16(sBytes[i]);
+//			}
+//			sBytes = new byte[length*2];
+//			p.copyToByteArray(sBytes,0,0,lengthBy2);
+			
 			return sBytes;
 		}
 		return null;

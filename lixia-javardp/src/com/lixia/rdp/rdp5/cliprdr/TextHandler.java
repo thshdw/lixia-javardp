@@ -14,6 +14,7 @@ package com.lixia.rdp.rdp5.cliprdr;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.io.UnsupportedEncodingException;
 
 import com.lixia.rdp.Common;
 import com.lixia.rdp.RdpPacket;
@@ -71,12 +72,9 @@ public class TextHandler extends TypeHandler {
 	 * @see com.lixia.rdp.rdp5.cliprdr.TypeHandler#handleData(com.lixia.rdp.RdpPacket, int, com.lixia.rdp.rdp5.cliprdr.ClipInterface)
 	 */
 	public void handleData(RdpPacket data, int length, ClipInterface c) {
-		String thingy = "";
-		for(int i = 0; i < length; i++){
-			int aByte = data.get8();
-			if(aByte != 0) thingy += (char) (aByte & 0xFF);
-		}
-		c.copyToClipboard (new StringSelection(thingy));
+		byte[] sBytes = new byte[length];
+		data.copyToByteArray(sBytes, 0, data.getPosition(), length);
+		c.copyToClipboard (new StringSelection(new String(sBytes)));
 	}
 
 	/* (non-Javadoc)
