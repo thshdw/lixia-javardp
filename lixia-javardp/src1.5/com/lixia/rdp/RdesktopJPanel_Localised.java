@@ -22,7 +22,6 @@ import javax.imageio.ImageIO;
 
 import javax.swing.SwingUtilities;
 import com.lixia.rdp.RdesktopJPanel;
-import com.lixia.rdp.rdp5.seamless.Position;
 
 // Created on 03-Sep-2003
 
