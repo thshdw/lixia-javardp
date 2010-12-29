@@ -205,6 +205,8 @@ public class RdpJPanel {
     protected OrdersJPanel orders = null;
 
     private Cache cache = null;
+    
+    private Cursor g_null_cursor = null;
 
     private int next_packet = 0;
 
@@ -1351,6 +1353,7 @@ public class RdpJPanel {
         switch (system_pointer_type) {
         case RDP_NULL_POINTER:
             logger.debug("RDP_NULL_POINTER");
+            surface.setCursor(null);
             setSubCursor(null);
             break;
 
@@ -1509,7 +1512,19 @@ public class RdpJPanel {
             throws RdesktopException {
         // FIXME: We should probably set another cursor here,
         // like the X window system base cursor or something.
-        setSubCursor(cache.getCursor(0));
+    	
+    	if(g_null_cursor == null){
+    		byte[] null_pointer_mask = new byte[1], null_pointer_data = new byte[24];
+    		
+    		null_pointer_mask[0] = (byte) 0x80;
+
+    		g_null_cursor = surface.createCursor(0, 0, 1, 1, null_pointer_mask, null_pointer_data,
+                    0);
+    	}
+    	surface.setCursor(g_null_cursor);
+    	setSubCursor(g_null_cursor);
+        //surface.setCursor(cache.getCursor(0));
+        //setSubCursor(cache.getCursor(0));
     }
 
     protected void process_colour_pointer_pdu(RdpPacket_Localised data)
@@ -1535,6 +1550,7 @@ public class RdpJPanel {
         cursor = surface.createCursor(x, y, width, height, mask, pixel,
                 cache_idx);
         // logger.info("Creating and setting cursor " + cache_idx);
+        surface.setCursor(cursor);
         setSubCursor(cursor);
         cache.putCursor(cache_idx, cursor);
     }
@@ -1544,6 +1560,7 @@ public class RdpJPanel {
 //        logger.debug("Rdp.RDP_POINTER_CACHED");
         int cache_idx = data.getLittleEndian16();
         // logger.info("Setting cursor "+cache_idx);
+        surface.setCursor(cache.getCursor(cache_idx));
         setSubCursor(cache.getCursor(cache_idx));
     }
     
