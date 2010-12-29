@@ -281,8 +281,10 @@ public class ClipChannel extends VChannel implements ClipInterface, ClipboardOwn
 		all.setLittleEndian16(CLIPRDR_RESPONSE);
 		all.setLittleEndian32(length+4);	// don't know why, but we need to add between 1 and 4 to the length, 
 											// otherwise the server cliprdr thread hangs
-		all.copyFromByteArray(data,0,all.getPosition(),length);
-		all.incrementPosition(length);
+		if(length>0){
+			all.copyFromByteArray(data,0,all.getPosition(),length);
+			all.incrementPosition(length);
+		}
 		all.setLittleEndian32(0);
 		
 		try {
