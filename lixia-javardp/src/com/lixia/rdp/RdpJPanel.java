@@ -46,11 +46,38 @@ public class RdpJPanel {
     protected static Logger logger = Logger.getLogger("RdpJPanel");
 
     /* constants for RDP Layer */
-    public static final int RDP_LOGON_NORMAL = 0x33;
 
-    public static final int RDP_LOGON_AUTO = 0x8;
+    /* Info Packet Flags */
+    private static int  INFO_MOUSE	=	0x00000001;
+    private static int  INFO_DISABLECTRLALTDEL	=	0x00000002;
+    private static int  INFO_AUTOLOGON		=	0x00000008;
+    private static int  INFO_UNICODE		=	0x00000010;
+    private static int  INFO_MAXIMIZESHELL	=	0x00000020;
+    private static int  INFO_LOGONNOTIFY	=	0x00000040;
+    private static int  INFO_COMPRESSION	=	0x00000080;
+    private static int  INFO_ENABLEWINDOWSKEY	=	0x00000100;
+    private static int  INFO_REMOTECONSOLEAUDIO	=	0x00002000;
+    private static int  INFO_FORCE_ENCRYPTED_CS_PDU	=0x00004000;
+    private static int  INFO_RAIL	=		0x00008000;
+    private static int  INFO_LOGONERRORS		=0x00010000;
+    private static int  INFO_MOUSE_HAS_WHEEL		=0x00020000;
+    private static int  INFO_PASSWORD_IS_SC_PIN	=	0x00040000;
+    private static int  INFO_NOAUDIOPLAYBACK	=	0x00080000;
+    private static int  INFO_USING_SAVED_CREDS	=	0x00100000;
+    private static int  RNS_INFO_AUDIOCAPTURE	=	0x00200000;
+    private static int  RNS_INFO_VIDEO_DISABLE	=	0x00400000;
 
-    public static final int RDP_LOGON_BLOB = 0x100;
+    private static int  CompressionTypeMask	=	0x00001E00;
+    private static int  PACKET_COMPR_TYPE_8K	=	0x00000100;
+    private static int  PACKET_COMPR_TYPE_64K	=	0x00000200;
+    private static int  PACKET_COMPR_TYPE_RDP6	=	0x00000300;
+    private static int  PACKET_COMPR_TYPE_RDP61	=	0x00000400;
+
+    private static int  INFO_NORMALLOGON =	(INFO_MOUSE | INFO_DISABLECTRLALTDEL | INFO_UNICODE | INFO_MAXIMIZESHELL);
+
+    /* Extended Info Packet clientAddressFamily */
+    private static int  CLIENT_INFO_AF_INET =0x0002;
+    private static int  CLIENT_INFO_AF_INET6 =0x0017;
 
     // PDU Types
     private static final int RDP_PDU_DEMAND_ACTIVE = 1;
@@ -492,13 +519,35 @@ public class RdpJPanel {
      * @param directory Initial working directory for connection
      * @throws ConnectionException
      */
-    public void connect(String username, InetAddress server, int flags,
+    public void connect(String username, InetAddress server,
             String domain, String password, String command, String directory)
             throws ConnectionException {
+    	
+		int connect_flags = INFO_NORMALLOGON;
+
+		if (Options.bulk_compression)
+		{
+			connect_flags |= INFO_COMPRESSION | PACKET_COMPR_TYPE_64K;
+		}
+		if (Options.autologin)
+		{
+			connect_flags |= INFO_AUTOLOGON;
+		}
+		if (Options.console_audio)
+		{
+			connect_flags |= INFO_REMOTECONSOLEAUDIO;
+		}
+
+		connect_flags |= INFO_UNICODE;
+		connect_flags |= INFO_LOGONERRORS;
+		connect_flags |= INFO_LOGONNOTIFY;
+		connect_flags |= INFO_ENABLEWINDOWSKEY;
+		connect_flags |= RNS_INFO_AUDIOCAPTURE;
+
         try {
             SecureLayer.connect(server);
             this.connected = true;
-            this.sendLogonInfo(flags, domain, username, password, command,
+            rdp_send_client_info(connect_flags, domain, username, password, command,
                     directory);
         }
         // Handle an unresolvable hostname
@@ -627,6 +676,37 @@ public class RdpJPanel {
         return;
     }
 
+    private void rdp_out_client_timezone_info(RdpPacket_Localised data){
+    	
+        data.setLittleEndian16(0xffc4); // out_uint16_le(s, 0xffc4);
+        data.setLittleEndian16(0xffff); // out_uint16_le(s, 0xffff);
+        data.outUnicodeString("GTB, normaltid", 2 * "GTB, normaltid"
+                .length()); // rdp_out_unistr(s, "GTB, normaltid", 2 *
+        // strlen("GTB, normaltid"));
+        data.incrementPosition(62 - 2 * "GTB, normaltid".length()); // out_uint8s(s,
+        // 62 -
+        // 2 *
+        // strlen("GTB,
+        // normaltid"));
+
+        data.setLittleEndian32(0x0a0000); // out_uint32_le(s, 0x0a0000);
+        data.setLittleEndian32(0x050000); // out_uint32_le(s, 0x050000);
+        data.setLittleEndian32(3); // out_uint32_le(s, 3);
+        data.setLittleEndian32(0); // out_uint32_le(s, 0);
+        data.setLittleEndian32(0); // out_uint32_le(s, 0);
+
+        data.outUnicodeString("GTB, sommartid", 2 * "GTB, sommartid"
+                .length()); // rdp_out_unistr(s, "GTB, sommartid", 2 *
+        // strlen("GTB, sommartid"));
+        data.incrementPosition(62 - 2 * "GTB, sommartid".length()); // out_uint8s(s,
+        // 62 -
+        // 2 *
+        // strlen("GTB,
+        // sommartid"));
+
+        data.setLittleEndian32(0x30000); // out_uint32_le(s, 0x30000);
+        data.setLittleEndian32(0x050000); // out_uint32_le(s, 0x050000);
+    }
     /**
      * Send user logon details to the server
      * @param flags Set of flags defining logon type
@@ -639,7 +719,7 @@ public class RdpJPanel {
      * @throws IOException
      * @throws CryptoException
      */
-    private void sendLogonInfo(int flags, String domain, String username,
+    private void rdp_send_client_info(int flags, String domain, String username,
             String password, String command, String directory)
             throws RdesktopException, IOException, CryptoException {
 
@@ -647,170 +727,51 @@ public class RdpJPanel {
         int len_dll = 2 * "C:\\WINNT\\System32\\mstscax.dll".length();
         int packetlen = 0;
 
-        int sec_flags = Constants.encryption ? (Secure.SEC_LOGON_INFO | Secure.SEC_ENCRYPT)
-                : Secure.SEC_LOGON_INFO;
+        int sec_flags = Secure.SEC_INFO_PKT | (Constants.encryption ? Secure.SEC_ENCRYPT:0) ;
         int domainlen = 2 * domain.length();
         int userlen = 2 * username.length();
         int passlen = 2 * password.length();
         int commandlen = 2 * command.length();
         int dirlen = 2 * directory.length();
 
-        RdpPacket_Localised data;
+        packetlen = 8 + (5 * 4) + domainlen + userlen + passlen + commandlen + dirlen;
+        if(Options.use_rdp5 && 1 != Options.server_rdp_version){
+        	//rdp 5
+        	packetlen += 180 + (2 * 4) + len_ip + len_dll;
+        }
+        RdpPacket_Localised data = SecureLayer.init(sec_flags, packetlen);
 
-        if (!Options.use_rdp5 || 1 == Options.server_rdp_version) {
-            logger.debug("Sending RDP4-style Logon packet");
-
-            data = SecureLayer.init(sec_flags, 18 + domainlen + userlen
-                    + passlen + commandlen + dirlen + 10);
-
-            data.setLittleEndian32(0);
-            data.setLittleEndian32(flags);
-            data.setLittleEndian16(domainlen);
-            data.setLittleEndian16(userlen);
-            data.setLittleEndian16(passlen);
-            data.setLittleEndian16(commandlen);
-            data.setLittleEndian16(dirlen);
-            data.outUnicodeString(domain, domainlen);
-            data.outUnicodeString(username, userlen);
-            data.outUnicodeString(password, passlen);
-            data.outUnicodeString(command, commandlen);
-            data.outUnicodeString(directory, dirlen);
-
-        } else {
-            flags |= RDP_LOGON_BLOB;
+        data.setLittleEndian32(0);/* codePage */
+        data.setLittleEndian32(flags);/* flags */
+        
+        data.setLittleEndian16(domainlen);
+        data.setLittleEndian16(userlen);
+        data.setLittleEndian16(passlen);
+        data.setLittleEndian16(commandlen);
+        data.setLittleEndian16(dirlen);
+        data.outUnicodeString(domain, domainlen);
+        data.outUnicodeString(username, userlen);
+        data.outUnicodeString(password, passlen);
+        data.outUnicodeString(command, commandlen);
+        data.outUnicodeString(directory, dirlen);
+        
+        if (Options.use_rdp5 && 1 != Options.server_rdp_version) {
             logger.debug("Sending RDP5-style Logon packet");
-            packetlen = 4
-                    + // Unknown uint32
-                    4
-                    + // flags
-                    2
-                    + // len_domain
-                    2
-                    + // len_user
-                    ((flags & RDP_LOGON_AUTO) != 0 ? 2 : 0)
-                    + // len_password
-                    ((flags & RDP_LOGON_BLOB) != 0 ? 2 : 0)
-                    + // Length of BLOB
-                    2
-                    + // len_program
-                    2
-                    + // len_directory
-                    (0 < domainlen ? domainlen + 2 : 2)
-                    + // domain
-                    userlen
-                    + ((flags & RDP_LOGON_AUTO) != 0 ? passlen : 0)
-                    + 0
-                    + // We have no 512 byte BLOB. Perhaps we must?
-                    ((flags & RDP_LOGON_BLOB) != 0
-                            && (flags & RDP_LOGON_AUTO) == 0 ? 2 : 0)
-                    + (0 < commandlen ? commandlen + 2 : 2)
-                    + (0 < dirlen ? dirlen + 2 : 2) + 2 + // Unknown (2)
-                    2 + // Client ip length
-                    len_ip + // Client ip
-                    2 + // DLL string length
-                    len_dll + // DLL string
-                    2 + // Unknown
-                    2 + // Unknown
-                    64 + // Time zone #0
-                    20 + // Unknown
-                    64 + // Time zone #1
-                    32 + 6; // Unknown
 
-            data = SecureLayer.init(sec_flags, packetlen); // s =
-            // sec_init(sec_flags,
-            // packetlen);
-            // logger.debug("Called sec_init with packetlen " + packetlen);
-
-            data.setLittleEndian32(0); // out_uint32(s, 0); // Unknown
-            data.setLittleEndian32(flags); // out_uint32_le(s, flags);
-            data.setLittleEndian16(domainlen); // out_uint16_le(s, len_domain);
-            data.setLittleEndian16(userlen); // out_uint16_le(s, len_user);
-            if ((flags & RDP_LOGON_AUTO) != 0) {
-                data.setLittleEndian16(passlen); // out_uint16_le(s,
-                // len_password);
-            }
-            if ((flags & RDP_LOGON_BLOB) != 0
-                    && ((flags & RDP_LOGON_AUTO) == 0)) {
-                data.setLittleEndian16(0); // out_uint16_le(s, 0);
-            }
-            data.setLittleEndian16(commandlen); // out_uint16_le(s,
-            // len_program);
-            data.setLittleEndian16(dirlen); // out_uint16_le(s, len_directory);
-
-            if (0 < domainlen)
-                data.outUnicodeString(domain, domainlen); // rdp_out_unistr(s,
-            // domain,
-            // len_domain);
-            else
-                data.setLittleEndian16(0); // out_uint16_le(s, 0);
-
-            data.outUnicodeString(username, userlen); // rdp_out_unistr(s,
-            // user, len_user);
-            if ((flags & RDP_LOGON_AUTO) != 0) {
-                data.outUnicodeString(password, passlen); // rdp_out_unistr(s,
-                // password,
-                // len_password);
-            }
-            if ((flags & RDP_LOGON_BLOB) != 0 && (flags & RDP_LOGON_AUTO) == 0) {
-                data.setLittleEndian16(0); // out_uint16_le(s, 0);
-            }
-            if (0 < commandlen) {
-                data.outUnicodeString(command, commandlen); // rdp_out_unistr(s,
-                // program,
-                // len_program);
-            } else {
-                data.setLittleEndian16(0); // out_uint16_le(s, 0);
-            }
-            if (0 < dirlen) {
-                data.outUnicodeString(directory, dirlen); // rdp_out_unistr(s,
-                // directory,
-                // len_directory);
-            } else {
-                data.setLittleEndian16(0); // out_uint16_le(s, 0);
-            }
-            data.setLittleEndian16(2); // out_uint16_le(s, 2);
-            data.setLittleEndian16(len_ip + 2); // out_uint16_le(s, len_ip + 2);
+            data.setLittleEndian16(CLIENT_INFO_AF_INET); 
+            data.setLittleEndian16(len_ip + 2); 
             // // Length of client ip
-            data.outUnicodeString("127.0.0.1", len_ip); // rdp_out_unistr(s,
-            // "127.0.0.1",
-            // len_ip);
-            data.setLittleEndian16(len_dll + 2); // out_uint16_le(s, len_dll
-            // + 2);
-            data.outUnicodeString("C:\\WINNT\\System32\\mstscax.dll", len_dll); // rdp_out_unistr(s,
-            // "C:\\WINNT\\System32\\mstscax.dll",
-            // len_dll);
-            data.setLittleEndian16(0xffc4); // out_uint16_le(s, 0xffc4);
-            data.setLittleEndian16(0xffff); // out_uint16_le(s, 0xffff);
-            data.outUnicodeString("GTB, normaltid", 2 * "GTB, normaltid"
-                    .length()); // rdp_out_unistr(s, "GTB, normaltid", 2 *
-            // strlen("GTB, normaltid"));
-            data.incrementPosition(62 - 2 * "GTB, normaltid".length()); // out_uint8s(s,
-            // 62 -
-            // 2 *
-            // strlen("GTB,
-            // normaltid"));
-
-            data.setLittleEndian32(0x0a0000); // out_uint32_le(s, 0x0a0000);
-            data.setLittleEndian32(0x050000); // out_uint32_le(s, 0x050000);
-            data.setLittleEndian32(3); // out_uint32_le(s, 3);
-            data.setLittleEndian32(0); // out_uint32_le(s, 0);
-            data.setLittleEndian32(0); // out_uint32_le(s, 0);
-
-            data.outUnicodeString("GTB, sommartid", 2 * "GTB, sommartid"
-                    .length()); // rdp_out_unistr(s, "GTB, sommartid", 2 *
-            // strlen("GTB, sommartid"));
-            data.incrementPosition(62 - 2 * "GTB, sommartid".length()); // out_uint8s(s,
-            // 62 -
-            // 2 *
-            // strlen("GTB,
-            // sommartid"));
-
-            data.setLittleEndian32(0x30000); // out_uint32_le(s, 0x30000);
-            data.setLittleEndian32(0x050000); // out_uint32_le(s, 0x050000);
+            data.outUnicodeString("127.0.0.1", len_ip); 
+            data.setLittleEndian16(len_dll + 2); 
+            data.outUnicodeString("C:\\WINNT\\System32\\mstscax.dll", len_dll); 
+            
+            /* clientTimeZone (172 bytes) */
+            rdp_out_client_timezone_info(data);
+            
             data.setLittleEndian32(2); // out_uint32_le(s, 2);
             data.setLittleEndian32(0); // out_uint32(s, 0);
-            data.setLittleEndian32(0xffffffc4); // out_uint32_le(s, 0xffffffc4);
-            data.setLittleEndian32(0xfffffffe); // out_uint32_le(s, 0xfffffffe);
+//            data.setLittleEndian32(0xffffffc4); // out_uint32_le(s, 0xffffffc4);
+//            data.setLittleEndian32(0xfffffffe); // out_uint32_le(s, 0xfffffffe);
             data.setLittleEndian32(Options.rdp5_performanceflags); // out_uint32_le(s,
                                                                     // 0x0f);
             data.setLittleEndian32(0); // out_uint32(s, 0);

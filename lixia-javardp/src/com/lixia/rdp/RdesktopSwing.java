@@ -26,6 +26,8 @@ import com.lixia.rdp.rdp5.VChannel;
 import com.lixia.rdp.rdp5.VChannels;
 import com.lixia.rdp.rdp5.cliprdr.ClipChannel;
 import com.lixia.rdp.rdp5.keys.KeysChannel;
+import com.lixia.rdp.rdp5.rdpdr.Printer;
+import com.lixia.rdp.rdp5.rdpdr.Rdpdr;
 import com.lixia.rdp.tools.SendEventJPanel;
 
 import org.apache.log4j.*;
@@ -224,6 +226,7 @@ public class RdesktopSwing {
         System.err.println("    --enable_menu               enable menu bar");
         System.err.println("    --overHttp                http proxy server address and port(example--192.168.100.100:80)");
         System.err.println("	--log4j_config=FILE			use FILE for log4j configuration");
+        System.err.println("	--bulk_compression			enable bulk compression");
         System.err.println("Example: java com.lixia.rdp.RdesktopSwing -g 800x600 -l WARN m52.propero.int");
 
         
@@ -264,14 +267,11 @@ public class RdesktopSwing {
 		// Failed to run native client, drop back to Java client instead.
 
 		// parse arguments
-
-		int logonflags = RdpJPanel.RDP_LOGON_NORMAL;
-
 		boolean fKdeHack = false;
 		int c;
 		String arg;
 		StringBuffer sb = new StringBuffer();
-		LongOpt[] alo = new LongOpt[16];
+		LongOpt[] alo = new LongOpt[17];
 		alo[0] = new LongOpt("debug_key", LongOpt.NO_ARGUMENT, null, 0);
 		alo[1] = new LongOpt("debug_hex", LongOpt.NO_ARGUMENT, null, 0);
 		alo[2] = new LongOpt("no_paste_hack", LongOpt.NO_ARGUMENT, null, 0);
@@ -288,6 +288,7 @@ public class RdesktopSwing {
         alo[13] = new LongOpt("save_licence", LongOpt.NO_ARGUMENT, null, 0);
         alo[14] = new LongOpt("persistent_caching", LongOpt.NO_ARGUMENT, null, 0);
         alo[15] = new LongOpt("overHttp", LongOpt.REQUIRED_ARGUMENT, null, 0);
+        alo[16] = new LongOpt("bulk_compression", LongOpt.NO_ARGUMENT, null, 0);
         
 		String progname = "Elusiva Everywhere";
 
@@ -354,6 +355,9 @@ public class RdesktopSwing {
                 	arg = g.getOptarg();
                 	Options.http_server = arg;
 					logger.info("remote http proxy server " + arg);
+                	break;
+                case 16:
+                	Options.bulk_compression = true;
                 	break;
 				default:
 					usage();
@@ -444,7 +448,7 @@ public class RdesktopSwing {
 				break;
 			case 'p':
 				Options.password = g.getOptarg();
-				logonflags |= RdpJPanel.RDP_LOGON_AUTO;
+				Options.autologin = true;
 				break;
 			case 's':
 				Options.command = g.getOptarg();
@@ -515,6 +519,12 @@ public class RdesktopSwing {
 				keyChannel=new KeysChannel();
 				channels.register(keyChannel);
 			}
+			
+			Rdpdr rdpdrChannel = new Rdpdr();
+			channels.register(rdpdrChannel);
+			
+			Printer printerDevice = new Printer();
+			rdpdrChannel.deviceRegister(printerDevice);
 		}
 		
 		if (Options.seamless_active){
@@ -618,7 +628,7 @@ public class RdesktopSwing {
 			if (RdpLayer != null) {
 				// Attempt to connect to server on port Options.port
 				try {
-					RdpLayer.connect(Options.username, InetAddress.getByName(server), logonflags, Options.domain, Options.password, Options.command, Options.directory);
+					RdpLayer.connect(Options.username, InetAddress.getByName(server), Options.domain, Options.password, Options.command, Options.directory);
 				// Remove to get rid of sendEvent tool
 				if (showTools) {
 					toolFrame = new SendEventJPanel(RdpLayer);

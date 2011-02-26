@@ -37,6 +37,11 @@ public class Options {
 	public static boolean fullscreen = false;
 	public static boolean built_in_licence = false;
     
+	//setting
+	public static boolean  autologin = false;
+	public static boolean  bulk_compression = false;
+	public static boolean  console_audio = false;
+	
 	public static boolean load_licence = false;
 	public static boolean save_licence = false;
 

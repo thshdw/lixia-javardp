@@ -25,7 +25,7 @@ public class Secure {
 	private Licence licence = new Licence(this);
     /* constants for the secure layer */
     public static final int SEC_ENCRYPT = 0x0008;
-    public static final int SEC_LOGON_INFO = 0x0040;
+    public static final int SEC_INFO_PKT = 0x0040;
 
     static final int SEC_RANDOM_SIZE = 32;
     static final int SEC_MODULUS_SIZE = 64;
