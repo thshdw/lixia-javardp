@@ -13,7 +13,7 @@ Seamless Java RDP client is a general Java RDP client for Windows Terminal Servi
 
 ###How do I use it?
 * Grab the [latest binary](https://github.com/thshdw/lixia-javardp/releases).
-* Place the binary in a directory ```~/Documents/rdp/`` for example.
+* Place the binary in a directory ```~/Documents/rdp/``` for example.
 * Create a script pointing to the directory calling lixia-javardp like this:
 ```
 #!/bin/bash
