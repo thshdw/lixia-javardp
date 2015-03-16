@@ -553,7 +553,8 @@ public abstract class KeyCode_FileBased {
 						&& !str.substring(charBegin).contains("Delete")) {
 					char newChar = str.substring(charBegin).charAt(0);
 					if (' ' != newChar) {
-						System.out.println(":" + newChar);
+                        logger.debug("This key was sent:" + newChar);
+//						System.out.println(":" + newChar);
 						byte[] by = (newChar+"").getBytes();
 						RdpPacket_Localised buffer = new RdpPacket_Localised(
 								by.length);
