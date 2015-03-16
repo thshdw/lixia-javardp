@@ -24,36 +24,41 @@ java -jar JavaRDP2.0-20150313.jar -g 1152x648 192.162.1.50 -u YourDomain\\YourUs
 
 Options are:
 ```
-Usage: java com.lixia.rdp.Rdesktop [options] server[:port]
-	-b 							bandwidth saving (good for 56k modem, but higher latency
-	-c DIR						working directory
-	-d DOMAIN					logon domain
+This project is based on code from the Elusiva Everywhere project, which was based on rdesktop, and properJavaRDP.
+For some history see... https://web.archive.org/web/20111120182133/http://www.elusiva.com/opensource
+Version: lixia-javardp 2.1.0
+Usage: java -jar lixia-javardp.jar [options]
+	-b ......................... bandwidth saving (good for 56k modem, but higher latency
+	-c DIR ..................... working directory
+	-d DOMAIN .................. logon domain
 	-D is dubug model
-	-f[s]				full-screen mode [s to enable seamless mode]
-	-g WxH						desktop geometry
-	-m MAPFILE					keyboard mapping file for terminal server
-	-l LEVEL					logging level {DEBUG, INFO, WARN, ERROR, FATAL}
-	-n HOSTNAME					client hostname
-	-p PASSWORD					password
-	-s SHELL					shell
-	-t NUM						RDP port (default 3389)
-	-T TITLE					do not support -T
-	-u USERNAME					user name
-	-o BPP						bits-per-pixel for display
-    -e path                     path to load licence from (requests and saves licence from server if not found)
-	-r device 					enable specified device redirection (this flag can be repeated)
-    --save_licence              request and save licence from server
-    --load_licence              load licence from file
-    --console                   connect to console
-	--debug_key 				show scancodes sent for each keypress etc
-	--debug_hex 				show bytes sent and received
-	--no_remap_hash 			disable hash remapping
-	--quiet_alt 				enable quiet alt fix
-	--no_encryption				disable encryption from client to server
-	--use_rdp4					use RDP version 4
-    --enable_menu               enable menu bar
-    --overHttp                http proxy server address and port(example--192.168.100.100:80)
-	--log4j_config=FILE			use FILE for log4j configuration
+	-f[s] ...................... full-screen mode [s to enable seamless mode]
+	-g WxH ..................... desktop geometry
+	-m MAPFILE ................. keyboard mapping file for terminal server
+	-l d,i,w,e,f ............. logging level {debug, info, warn, error, fatal}
+	-n HOSTNAME ................ client hostname
+	-p PASSWORD ................ password
+	-s SHELL ................... shell
+	-t NUM ..................... RDP port (default 3389)
+	-T TITLE ................... -T 'Production WebServer''
+	-u USERNAME ................ user name
+	-o BPP ..................... bits-per-pixel for display
+    -e path .................... path to load licence from (requests and saves licence from server if not found)
+	-r device .................. enable specified device redirection (this flag can be repeated)
+    --save_licence ............. request and save licence from server
+    --load_licence ............. load licence from file
+    --console .................. connect to console
+	--debug_key ................ show scancodes sent for each keypress etc
+	--debug_hex ................ show bytes sent and received
+	--no_remap_hash ............ disable hash remapping
+	--quiet_alt ................ enable quiet alt fix
+	--no_encryption ............ disable encryption from client to server
+	--use_rdp4 ................. use RDP version 4
+    --enable_menu .............. enable menu bar
+    --overHttp ................. http proxy server address and port(example--192.168.100.100:80)
+	--log4j_config=FILE ........ use FILE for log4j configuration
+	--bulk_compression ......... enable bulk compression
+Example: java -jar lixia-javardp.jar 192.168.1.50 -g 1152x648 -u admin
 ```
 
 ###Compiling from source
