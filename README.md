@@ -18,7 +18,7 @@ Seamless Java RDP client is a general Java RDP client for Windows Terminal Servi
 ```
 #!/bin/bash
 cd /Users/thshdw/Documents/rdp/
-java -jar JavaRDP2.0-20150313.jar -g 1152x648 192.162.1.50 -u YourDomain\\YourUserName
+java -jar lixia-javardp.jar -g 1152x648 192.162.1.50 -u YourDomain\\YourUserName -T 'Print Server' -l i
 ```
 * Execute your script ```thshdw-mac-book:rdp tum$ sh mywebserver.command```
 
