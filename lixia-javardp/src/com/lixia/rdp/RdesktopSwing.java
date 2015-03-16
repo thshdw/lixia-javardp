@@ -194,47 +194,45 @@ public class RdesktopSwing {
 	 * 
 	 */
 	public static void usage() {
-		System.err.println("Elusiva Everywhere version " + Version.version);
-		System.err.println("Usage: java com.lixia.rdp.Rdesktop [options] server[:port]");
-		System.err.println("	-b 							bandwidth saving (good for 56k modem, but higher latency");
-		System.err.println("	-c DIR						working directory");
-		System.err.println("	-d DOMAIN					logon domain");
+        System.err.println("This project is based on code from the Elusiva Everywhere project, which was based on rdesktop, and properJavaRDP.");
+		System.err.println("For some history see... https://web.archive.org/web/20111120182133/http://www.elusiva.com/opensource");
+        System.err.println("Version: lixia-javardp " + Version.version);
+		System.err.println("Usage: java -jar lixia-javardp.jar [options]");
+		System.err.println("	-b ......................... bandwidth saving (good for 56k modem, but higher latency");
+		System.err.println("	-c DIR ..................... working directory");
+		System.err.println("	-d DOMAIN .................. logon domain");
 		System.err.println("	-D is dubug model");
-		System.err.println("	-f[s]				full-screen mode " +
-				"[s to enable seamless mode]");
-		System.err.println("	-g WxH						desktop geometry");
-		System.err.println("	-m MAPFILE					keyboard mapping file for terminal server");
-		System.err.println("	-l LEVEL					logging level {DEBUG, INFO, WARN, ERROR, FATAL}");
-		System.err.println("	-n HOSTNAME					client hostname");
-		System.err.println("	-p PASSWORD					password");
-		System.err.println("	-s SHELL					shell");
-		System.err.println("	-t NUM						RDP port (default 3389)");
-		System.err.println("	-T TITLE					do not support -T");
-		System.err.println("	-u USERNAME					user name");
-		System.err.println("	-o BPP						bits-per-pixel for display");
-        System.err.println("    -e path                     path to load licence from (requests and saves licence from server if not found)");
-        System.err.println("	-r device 					enable specified device redirection (this flag can be repeated)");
-        System.err.println("    --save_licence              request and save licence from server");
-        System.err.println("    --load_licence              load licence from file");
-        System.err.println("    --console                   connect to console");
-		System.err.println("	--debug_key 				show scancodes sent for each keypress etc");
-		System.err.println("	--debug_hex 				show bytes sent and received");
-		System.err.println("	--no_remap_hash 			disable hash remapping");
-		System.err.println("	--quiet_alt 				enable quiet alt fix");
-		System.err.println("	--no_encryption				disable encryption from client to server");
-		System.err.println("	--use_rdp4					use RDP version 4");
-        System.err.println("    --enable_menu               enable menu bar");
-        System.err.println("    --overHttp                http proxy server address and port(example--192.168.100.100:80)");
-        System.err.println("	--log4j_config=FILE			use FILE for log4j configuration");
-        System.err.println("	--bulk_compression			enable bulk compression");
-        System.err.println("Example: java com.lixia.rdp.RdesktopSwing -g 800x600 -l WARN m52.propero.int");
+		System.err.println("	-f[s] ...................... full-screen mode [s to enable seamless mode]");
+		System.err.println("	-g WxH ..................... desktop geometry");
+		System.err.println("	-m MAPFILE ................. keyboard mapping file for terminal server");
+		System.err.println("	-l d,i,w,e,f ............. logging level {debug, info, warn, error, fatal}");
+		System.err.println("	-n HOSTNAME ................ client hostname");
+		System.err.println("	-p PASSWORD ................ password");
+		System.err.println("	-s SHELL ................... shell");
+		System.err.println("	-t NUM ..................... RDP port (default 3389)");
+		System.err.println("	-T TITLE ................... -T 'Production WebServer''");
+		System.err.println("	-u USERNAME ................ user name");
+		System.err.println("	-o BPP ..................... bits-per-pixel for display");
+        System.err.println("    -e path .................... path to load licence from (requests and saves licence from server if not found)");
+        System.err.println("	-r device .................. enable specified device redirection (this flag can be repeated)");
+        System.err.println("    --save_licence ............. request and save licence from server");
+        System.err.println("    --load_licence ............. load licence from file");
+        System.err.println("    --console .................. connect to console");
+		System.err.println("	--debug_key ................ show scancodes sent for each keypress etc");
+		System.err.println("	--debug_hex ................ show bytes sent and received");
+		System.err.println("	--no_remap_hash ............ disable hash remapping");
+		System.err.println("	--quiet_alt ................ enable quiet alt fix");
+		System.err.println("	--no_encryption ............ disable encryption from client to server");
+		System.err.println("	--use_rdp4 ................. use RDP version 4");
+        System.err.println("    --enable_menu .............. enable menu bar");
+        System.err.println("    --overHttp ................. http proxy server address and port(example--192.168.100.100:80)");
+        System.err.println("	--log4j_config=FILE ........ use FILE for log4j configuration");
+        System.err.println("	--bulk_compression ......... enable bulk compression");
+        System.err.println("Example: java -jar lixia-javardp.jar 192.168.1.50 -g 1152x648 -u admin");
 
-        
-        
 		RdesktopSwing.exit(0, null, (RdesktopJFrame)null, true);
 	}
-  
-  
+
 	/**
 	 * 
 	 * @param args
@@ -252,9 +250,6 @@ public class RdesktopSwing {
         mapFile = "en-gb";
         keyMapLocation = "";
         toolFrame = null;
-       
-        BasicConfigurator.configure();
-		logger.setLevel(Level.INFO);
 
 		// Attempt to run a native RDP Client
 
@@ -290,10 +285,10 @@ public class RdesktopSwing {
         alo[15] = new LongOpt("overHttp", LongOpt.REQUIRED_ARGUMENT, null, 0);
         alo[16] = new LongOpt("bulk_compression", LongOpt.NO_ARGUMENT, null, 0);
         
-		String progname = "Elusiva Everywhere";
+		String progname = "lixia-javardp";
 
 		Getopt g = new Getopt("properJavaRDP", args,
-				"bc:d:f::g:k:l:m:n:p:s:t:u:o:r:", alo);
+				"b:c:d:f:g:k:l:m:n:p:s:t:T:u:o:r:", alo);
 
 //		ClipChannel clipChannel = new ClipChannel();
 
@@ -313,7 +308,6 @@ public class RdesktopSwing {
 				case 3:
 					arg = g.getOptarg();
 					PropertyConfigurator.configure(arg);
-					logger.info("Log4j using config file " + arg);
 					break;
 				case 4:
 					showTools = true;
@@ -418,23 +412,18 @@ public class RdesktopSwing {
 				arg = g.getOptarg();
 				switch (arg.charAt(0)) {
 				case 'd':
-				case 'D':
 					logger.setLevel(Level.DEBUG);
 					break;
 				case 'i':
-				case 'I':
 					logger.setLevel(Level.INFO);
 					break;
 				case 'w':
-				case 'W':
 					logger.setLevel(Level.WARN);
 					break;
 				case 'e':
-				case 'E':
 					logger.setLevel(Level.ERROR);
 					break;
 				case 'f':
-				case 'F':
 					logger.setLevel(Level.FATAL);
 					break;
 				default:
@@ -543,13 +532,13 @@ public class RdesktopSwing {
 			}
 		}
 				
-		logger.info("Elusiva Everywhere version " + Version.version);
+		logger.info("lixia-javardp version is: " + Version.version);
 
 		if (args.length == 0)
 			usage();
 
 		String java = System.getProperty("java.specification.version");
-		logger.info("Java version is " + java);
+		logger.info("Java version is: " + java);
 
 		String os = System.getProperty("os.name");
 		String osvers = System.getProperty("os.version");
@@ -574,7 +563,14 @@ public class RdesktopSwing {
 		//RdesktopFrame window = new RdesktopFrame_Localised();
 		//window.setClip(clipChannel);
 		RdesktopJFrame window = new RdesktopJFrame_Localised();
-		window.setTitle(window.getTitle()+server);
+		if (Options.windowTitle == "") {
+            Options.windowTitle = "lixia-javardp:" + " " + server;
+            window.setTitle(Options.windowTitle);
+        }
+        else {
+            window.setTitle(Options.windowTitle);
+        }
+
 		
 		RdesktopJPanel canvas = (RdesktopJPanel)window.getContentPane();
 		canvas.addFocusListener(clipChannel);

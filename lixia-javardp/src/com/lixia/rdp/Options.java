@@ -24,13 +24,13 @@ public class Options {
     
 	public static boolean low_latency = true; // disables bandwidth saving tcp packets
 	public static int keylayout = 0x809; // UK by default
-	public static String username = "root"; // -u username
+	public static String username = ""; // -u username
 	public static String domain = ""; // -d domain
 	public static String password = ""; // -p password
 	public static String hostname = ""; // -n hostname
 	public static String command = "";  // -s command
 	public static String directory = ""; // -d directory
-	public static String windowTitle = "Elusiva Everywhere"; // -T windowTitle
+	public static String windowTitle = ""; // -T windowTitle
 	public static int width = 800; // -g widthxheight
 	public static int height = 600; // -g widthxheight
 	public static int port = 3389; // -t port
@@ -56,7 +56,7 @@ public class Options {
 	
 	public static boolean seamless_active = false;
 	public static boolean http_mode = false;
-	public static String http_server = "192.168.0.115:8080/WSService/RDPSocket";
+	public static String http_server = ""; //192.168.0.115:8080/WSService/RDPSocket";
 	
 	public static int screenInsets_title = 14;
 	

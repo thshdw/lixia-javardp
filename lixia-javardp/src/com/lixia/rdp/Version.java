@@ -22,7 +22,7 @@ import java.util.Calendar;
  */
 
 public class Version {
-	public static String version = "2.0";
+	public static String version = "2.1.0";
 
 	/**
 	 * Display the current version of properJavaRDP

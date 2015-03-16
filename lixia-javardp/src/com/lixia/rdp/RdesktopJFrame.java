@@ -90,8 +90,9 @@ public class RdesktopJFrame extends javax.swing.JFrame {
 	        catch(Exception e){
 	        	//nothing to do
 	        }
-	        this.setTitle("lixia-javaRDP:"+Options.hostname);
-			setLocationRelativeTo(null);
+
+            this.setTitle(Options.windowTitle);
+            setLocationRelativeTo(null);
 			canvas.requestFocusInWindow();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -131,7 +132,7 @@ public class RdesktopJFrame extends javax.swing.JFrame {
 	}
 
 	public void showErrorDialog(String[] msg) {
-		JDialog d = new OKDialog(this, "Fronware Everywhere error", msg);
+		JDialog d = new OKDialog(this, "lixia-javardp: Error", msg);
 		d.setVisible(true);
 	}
 	
@@ -199,7 +200,7 @@ public class RdesktopJFrame extends javax.swing.JFrame {
 
 	public boolean showYesNoErrorDialog(String[] msg) {
 
-		YesNoDialog d = new YesNoDialog(this, "Elusiva Everywhere error", msg);
+		YesNoDialog d = new YesNoDialog(this, "lixia-javardp: Error", msg);
 		d.setVisible(true);
 		return d.retry;
 	}

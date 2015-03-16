@@ -174,14 +174,14 @@ public abstract class InputJPanel {
 								: "down")
 						+ ((flags & KBD_FLAG_QUIET) != 0 ? " quiet" : "")
 						+ " at " + t + ")";
-//				System.out.println("传送"+debugString);
+//				System.out.println("debugString);
 				sendScancode(t, flags, scancode);
 			}
-//			System.out.println("是不是应经进来了啊");
+//			System.out.println("debugString");
 			if (pressSequence.length() > 0)
 				logger.debug(debugString);
 		} catch (Exception ex) {
-//			System.out.println("传输失败");
+//			System.out.println("debugString");
 			return;
 		}
 	}
@@ -640,14 +640,14 @@ public abstract class InputJPanel {
 		sendScancode(getTime(), RDP_KEYRELEASE, 0x1d);	// CTRL
 	}
 	/**
-	 * Send key　press
+	 * Send key锟斤拷press
 	 */
 	public void sendKeyByPress(int key)
 	{
 		sendScancode(getTime(), RDP_KEYPRESS, key);	
 	}
 	/**
-	 * Send key　release
+	 * Send key锟斤拷release
 	 */
 	public void sendKeyByRelease(int key)
 	{
