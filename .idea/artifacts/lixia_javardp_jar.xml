@@ -1,0 +1,15 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="lixia-javardp:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/lixia_javardp_jar</output-path>
+    <root id="archive" name="lixia-javardp.jar">
+      <element id="module-output" name="lixia-javardp" />
+      <element id="directory" name="keymaps">
+        <element id="dir-copy" path="$PROJECT_DIR$/keymaps" />
+      </element>
+      <element id="library" level="project" name="rdpseamless" />
+      <element id="library" level="project" name="log4j-1.2.17" />
+      <element id="library" level="project" name="javardp-wsclient-1.0" />
+      <element id="library" level="project" name="java-getopt-1.0.11" />
+    </root>
+  </artifact>
+</component>
