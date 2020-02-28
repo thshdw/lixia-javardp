@@ -41,7 +41,7 @@ import org.apache.log4j.Logger;
 import com.lixia.rdp.Options;
 
 
-public class RdesktopJFrame extends javax.swing.JFrame {
+public class RdesktopJFrame extends JFrame {
 
 	static Logger logger = Logger.getLogger(RdesktopJFrame.class);
 
